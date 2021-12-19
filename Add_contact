@@ -24,17 +24,17 @@ from io import BytesIO
 from pathlib import Path
 from urllib.parse import urlencode
 
-subdomain = 'yair9'
+subdomain = 'xxxx'
 
 link = 'https://' + subdomain + '.amocrm.com/oauth2/access_token'
 
 ''' Соберем данные для запроса '''
 data = {
-    'client_id': '6b4f1fd2-1b3c-4212-96c3-4c22f9f666fc',
-    'client_secret': 'bVxUdWLgs2F2cvsEnxD5L2TNgC21r6fn0kwxyamvkFLA3hVid3xKjp5hxMYN4Zh1',
+    'client_id': 'xxxx',
+    'client_secret': 'xxxx',
     'grant_type': 'authorization_code',
-    'code': 'def50200af6ab02875b52235e0a5caaa11f777fde57e413a3d366797274c1cbf430a9d096140ffa3247a00c23f60a65f780a2bf2925d5054c4e6f81d68181eaf467404ae7ccc2f6c689d1c7b418c7682cb1ded7f3d4f96af493e1f16605175c05698ac96c9c7e641ce7610a09f6a95e5ea8f01ad2761c8b14d257e8188b276ad190dccbadc5261c8c0cac9051716b327eac4f23e14573ecc04c540ec3715111fc55a7aaa9d3ff55e8f5da10583a62183f454be9c178a661f4d27eae9c1f4aa1cb4f96d9f6bb40d01aa143d16fba7c211aa312f9c2f01eefd565e2c8e77c5752e12f1522ef402fb396f75cef86f95014bea1b4b7a3fbd5ba3a730efc38366a0f98545951532358826d1b46a54ec737829dbdbd0e8afcf3a076aa2c0e1426040780fc9144768cd6858cbee516f2dc39d66e09d9145dea32acaf4addf1e7fd4849f7d323623055d068cbad67df9aa607ae58e3f1f809c6ac6dbb16339e9bd7af871db04b015257520e5d42f2fe4f19f035d351ac7ef92691eb61ebba43835327bb96be50c30ef00e556251c21bf644e5ef633f9583cd6f6dce646c6891631c1144c876c33b52fee222d53e4f5140d287a6a3c0ff9eebb81781095529534d1ecb36b485e0d8b0ecb03ebcc7a9a14947c2f921f7420f0c49cf180',
-    'redirect_uri': 'https://yair9.amocrm.com/oauth2/access_token',  # /api/v2/contacts
+    'code': 'xxxx',
+    'redirect_uri': 'xxxx',
 }
 
 out = BytesIO()
