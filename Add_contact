@@ -1,0 +1,246 @@
+def Exept(code):
+    errors = {
+        301: 'Moved permanently',
+        400: 'Bad request',
+        401: 'Unauthorized',
+        403: 'Forbidden',
+        404: 'Not found',
+        500: 'Internal server error',
+        502: 'Bad gateway',
+        503: 'Service unavailable'
+    }
+    try:
+        if code != 200 and code != 204:
+            print(errors[code], 'Undescribed error', code)
+        else:
+            print("GOOD!")
+    except Exception as e:
+        print("Exception", e)
+
+
+import pycurl
+import json
+from io import BytesIO
+from pathlib import Path
+from urllib.parse import urlencode
+
+subdomain = 'yair9'
+
+link = 'https://' + subdomain + '.amocrm.com/oauth2/access_token'
+
+''' Соберем данные для запроса '''
+data = {
+    'client_id': '6b4f1fd2-1b3c-4212-96c3-4c22f9f666fc',
+    'client_secret': 'bVxUdWLgs2F2cvsEnxD5L2TNgC21r6fn0kwxyamvkFLA3hVid3xKjp5hxMYN4Zh1',
+    'grant_type': 'authorization_code',
+    'code': 'def50200af6ab02875b52235e0a5caaa11f777fde57e413a3d366797274c1cbf430a9d096140ffa3247a00c23f60a65f780a2bf2925d5054c4e6f81d68181eaf467404ae7ccc2f6c689d1c7b418c7682cb1ded7f3d4f96af493e1f16605175c05698ac96c9c7e641ce7610a09f6a95e5ea8f01ad2761c8b14d257e8188b276ad190dccbadc5261c8c0cac9051716b327eac4f23e14573ecc04c540ec3715111fc55a7aaa9d3ff55e8f5da10583a62183f454be9c178a661f4d27eae9c1f4aa1cb4f96d9f6bb40d01aa143d16fba7c211aa312f9c2f01eefd565e2c8e77c5752e12f1522ef402fb396f75cef86f95014bea1b4b7a3fbd5ba3a730efc38366a0f98545951532358826d1b46a54ec737829dbdbd0e8afcf3a076aa2c0e1426040780fc9144768cd6858cbee516f2dc39d66e09d9145dea32acaf4addf1e7fd4849f7d323623055d068cbad67df9aa607ae58e3f1f809c6ac6dbb16339e9bd7af871db04b015257520e5d42f2fe4f19f035d351ac7ef92691eb61ebba43835327bb96be50c30ef00e556251c21bf644e5ef633f9583cd6f6dce646c6891631c1144c876c33b52fee222d53e4f5140d287a6a3c0ff9eebb81781095529534d1ecb36b485e0d8b0ecb03ebcc7a9a14947c2f921f7420f0c49cf180',
+    'redirect_uri': 'https://yair9.amocrm.com/oauth2/access_token',  # /api/v2/contacts
+}
+
+out = BytesIO()
+c = pycurl.Curl()
+c.setopt(c.USERAGENT, 'amoCRM-oAuth-client/1.0')
+c.setopt(c.URL, link)
+c.setopt(c.HTTPHEADER, list('Content-Type:application/json'))
+c.setopt(c.HEADER, False)
+c.setopt(c.CUSTOMREQUEST, 'POST')
+c.setopt(c.POSTFIELDS, urlencode(data))
+c.setopt(c.SSL_VERIFYPEER, 1)
+c.setopt(c.SSL_VERIFYHOST, 2)
+c.setopt(c.WRITEDATA, out)
+code = c.getinfo(pycurl.HTTP_CODE)
+c.perform()
+
+'''    Exept    '''
+Exept(code) 
+
+response = json.loads(out.getvalue().decode('utf8'))
+
+access_token = response['access_token'] 
+refresh_token = response['refresh_token'] 
+token_type = response['token_type']  
+expires_in = response['expires_in']  
+
+
+link = 'https://' + subdomain + '.amocrm.com/oauth2/access_token'
+
+''' Соберем данные для запроса '''
+data = {
+    'client_id': '6b4f1fd2-1b3c-4212-96c3-4c22f9f666fc',
+    'client_secret': 'bVxUdWLgs2F2cvsEnxD5L2TNgC21r6fn0kwxyamvkFLA3hVid3xKjp5hxMYN4Zh1',
+    'grant_type': 'refresh_token',
+    'refresh_token' : refresh_token,
+    'redirect_uri': 'https://yair9.amocrm.com/oauth2/access_token',  # /api/v2/contacts
+}
+
+out = BytesIO()
+
+c.setopt(c.USERAGENT, 'amoCRM-oAuth-client/1.0')
+c.setopt(c.URL, link)
+c.setopt(c.HTTPHEADER, list('Content-Type:application/json'))
+c.setopt(c.HEADER, False)
+c.setopt(c.CUSTOMREQUEST, 'POST')
+c.setopt(c.POSTFIELDS, urlencode(data))
+c.setopt(c.SSL_VERIFYPEER, 1)
+c.setopt(c.SSL_VERIFYHOST, 2)
+c.setopt(c.WRITEDATA, out)
+code = c.getinfo(pycurl.HTTP_CODE)
+c.perform()
+
+'''    Exept    '''
+Exept(code) 
+
+response = json.loads(out.getvalue().decode('utf8'))
+
+access_token = response['access_token'] 
+refresh_token = response['refresh_token']  
+token_type = response['token_type']  
+expires_in = response['expires_in']  
+
+
+'''------------------------ АВТОРИЗАЦИЯ ------------------------'''
+headers = {
+    "Accept: application/json",
+    'Authorization: Bearer ' + access_token
+}
+
+out = BytesIO()
+link='https://' + subdomain + '.amocrm.com/api/v4/account'
+c.setopt(c.USERAGENT, 'amoCRM-API-client/1.0')
+c.setopt(c.URL, link)
+c.setopt(c.POSTFIELDS, str(headers))  # urlencode(user)
+c.setopt(c.HEADER, False)
+c.setopt(c.SSL_VERIFYPEER, 1)
+c.setopt(c.SSL_VERIFYHOST, 2)
+c.setopt(c.WRITEDATA, out)
+code = c.getinfo(pycurl.HTTP_CODE)
+
+'''    Exept    '''
+Exept(code) 
+
+contacts = {
+      'add': [
+         {
+            'name': "Jason Nash",
+            'responsible_user_id': "504141",
+            'created_by': "504141",
+            'created_at': "1509051600",
+            'tags': "important, delivery",
+            'leads_id': [
+               "45615",
+               "43510"
+            ],
+            'company_id': "30615",
+            'custom_fields': [
+               {
+                  'id': "4396817",
+                  'values': [
+                     {
+                        'value': "Sales Manager"
+                     }
+                  ]
+               },
+               {
+                  'id': "4396818",
+                  'values': [
+                     {
+                        'value': "+19990123456",
+                        'enum': "WORK"
+                     },
+                     {
+                        'value': "+19997894561",
+                        'enum': "WORKDD"
+                     },
+                     {
+                        'value': "+19991597532",
+                        'enum': "MOB"
+                     }
+                  ]
+               },
+               {
+                  'id': "4396819",
+                  'values': [
+                     {
+                        'value': "example@example.moc",
+                        'enum': "WORK"
+                     }
+                  ]
+               },
+               {
+                  'id': "4396821",
+                  'values': [
+                     {
+                        'value': "example.example",
+                        'enum': "SKYPE"
+                     }
+                  ]
+               },
+               {
+                  'id': "4400115",
+                  'values': [
+                     {
+                        'value': "Madison st., 1",
+                        'subtype': "address_line_1"
+                     },
+                     {
+                        'value': "Washington",
+                        'subtype': "city"
+                     },
+                     {
+                        'value': "101010",
+                        'subtype': "zip"
+                     },
+                     {
+                        'value': "US",
+                        'subtype': "country"
+                     }
+                  ]
+               },
+               {
+                  'id': "4400116",
+                     'values': [
+                        "3692662",
+                        "3692663"
+                     ]
+               }
+            ]
+         }
+      ]
+   }
+
+
+''' ДОБАВЛЕНИЕ КОНТАКТА '''
+
+link='https://' + subdomain + '.amocrm.com/api/v2/contacts'
+
+out = BytesIO()
+c.setopt(c.USERAGENT, 'amoCRM-API-client/1.0')
+c.setopt(c.URL, link)
+c.setopt(c.CUSTOMREQUEST, 'POST')
+c.setopt(c.POSTFIELDS, str(contacts)) 
+c.setopt(c.HTTPHEADER, list('Content-Type:application/json'))
+c.setopt(c.COOKIEFILE, str(Path.home()) + '\cookie.txt')
+c.setopt(c.COOKIEJAR, str(Path.home()) + '\cookie.txt')
+c.setopt(c.HEADER, False)
+c.setopt(c.SSL_VERIFYPEER, 0)
+c.setopt(c.SSL_VERIFYHOST, 0)
+c.setopt(c.WRITEDATA, out)
+code = c.getinfo(pycurl.HTTP_CODE)
+
+'''    Exept    '''
+Exept(code) 
+
+Response =  json.dumps(out.getvalue().decode('utf8'))
+
+print(out)
+print(Response)
+
+Response = Response['_embedded']['items']
+output = 'The ID of the added contacts:' 
+for v in Response:
+    if list == type(v):
+        output += v['id']
+
+print(output)
+
+
